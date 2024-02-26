@@ -42,6 +42,15 @@ import DeleteFaculty from "./components/admin/deleteFaculty/DeleteFaculty";
 import DeleteStudent from "./components/admin/deleteStudent/DeleteStudent";
 import DeleteSubject from "./components/admin/deleteSubject/DeleteSubject";
 import CreateNotice from "./components/admin/createNotice/CreateNotice";
+// import PDFViewer from "./components/student/addCertificates/PDFViewer";
+import Submit from "./components/student/addCertificates/Submit"
+import Visualize from "./components/faculty/visualize/Visualize";
+import AddCommitteeMember from "./components/admin/addCommitteeMembers/AddCommitteeMember";
+import AllCommitte from "./components/admin/allCommittee/AllCommittee";
+// import AddCommittee from "./components/addCommitte/AddComittee";
+import AddCommitte from "./components/admin/addCommittee/AddCommittee";
+import CommitteeAttendances from "./components/admin/committeeAttendance/CommitteeAttendances";
+
 
 const App = () => {
   return (
@@ -73,6 +82,10 @@ const App = () => {
       <Route path="/admin/addsubject" element={<AddSubject />} />
       <Route path="/admin/allsubject" element={<GetSubject />} />
       <Route path="/admin/allstudent" element={<GetStudent />} />
+      <Route path="/admin/addCommitteeMember" element={<AddCommitteeMember />} />
+      <Route path="/admin/addCommittee" element={<AddCommitte />} />
+      <Route path="/admin/allCommittee" element={<AllCommitte />} />
+      <Route path="/admin/committeeAttendance" element={<CommitteeAttendances />} />
 
       {/* Faculty  */}
 
@@ -85,6 +98,7 @@ const App = () => {
       <Route path="/faculty/createtest" element={<CreateTest />} />
       <Route path="/faculty/uploadmarks" element={<UploadMarks />} />
       <Route path="/faculty/markattendance" element={<MarkAttendance />} />
+      <Route path="/faculty/visualize" element={<Visualize />} />
 
       {/* Student  */}
 
@@ -97,6 +111,7 @@ const App = () => {
       <Route path="/student/subjectlist" element={<SubjectList />} />
       <Route path="/student/testresult" element={<TestResult />} />
       <Route path="/student/attendance" element={<Attendance />} />
+      <Route path="/student/addCertificates" element={<Submit />} />
     </Routes>
   );
 };

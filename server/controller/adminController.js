@@ -1,11 +1,13 @@
 import Admin from "../models/admin.js";
 import Department from "../models/department.js";
+import Committee from "../models/committee.js";
 import Faculty from "../models/faculty.js";
 import Student from "../models/student.js";
 import Subject from "../models/subject.js";
 import Notice from "../models/notice.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import committeemembers from "../models/committeeMembers.js";
 
 export const adminLogin = async (req, res) => {
   const { username, password } = req.body;
@@ -224,6 +226,96 @@ export const addDepartment = async (req, res) => {
     res.status(500).json(errors);
   }
 };
+
+export const addCommittee = async (req, res) => {
+  try {
+    const errors = { committeeError: String };
+    const { committee } = req.body;
+    const existingCommittee = await Committee.findOne({ committee });
+    if (existingCommittee) {
+      errors.committeeError = "Committee already added";
+      return res.status(400).json(errors);
+    }
+    const committees = await Committee.find({});
+    let add = committees.length + 1;
+    let committeeCode;
+    if (add < 9) {
+      committeeCode = "0" + add.toString();
+    } else {
+      committeeCode = add.toString();
+    }
+
+    const newCommittee = await new Committee({
+      committee,
+      committeeCode,
+    });
+
+    await newCommittee.save();
+    return res.status(200).json({
+      success: true,
+      message: "Committee added successfully",
+      response: newCommittee,
+    });
+  } catch (error) {
+    const errors = { backendError: String };
+    errors.backendError = error;
+    res.status(500).json(errors);
+  }
+};
+
+export const addCommitteeMembers = async (req, res) => {
+  try {
+    const {
+      name,
+      department,
+      contactNumber,
+      email,
+      section,
+      batch,
+      year,
+      committee,
+      role,
+      designation,
+    } = req.body;
+
+    // Check if the member with the given email already exists
+    const existingMember = await committeemembers.findOne({ email });
+    if (existingMember) {
+      return res.status(400).json({ emailError: 'Email already exists' });
+    }
+
+    // Create a new committee member
+    const newMember = new committeemembers({
+      name,
+      department,
+      contactNumber,
+      email,
+      section,
+      batch,
+      year,
+      committee,
+      role,
+      designation,
+    });
+
+    // Save the new member to the database
+    console.log(committee)
+    await newMember.save();
+   
+
+    return res.status(200).json({
+      success: true,
+      message: 'Member registered successfully',
+      response: newMember,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ backendError: 'Internal Server Error' });
+  }
+};
+
+
+
 
 export const addFaculty = async (req, res) => {
   try {
@@ -567,6 +659,69 @@ export const addStudent = async (req, res) => {
   }
 };
 
+//     const students = await Student.find({ department });
+//     let helper;
+//     if (students.length < 10) {
+//       helper = "00" + students.length.toString();
+//     } else if (students.length < 100 && students.length > 9) {
+//       helper = "0" + students.length.toString();
+//     } else {
+//       helper = students.length.toString();
+//     }
+
+//     var date = new Date();
+//     var components = ["STU", date.getFullYear(), departmentHelper, helper];
+//     var username = components.join("");
+    
+//     // Store the date of birth as the password directly (without hashing)
+//     const password = dob.split("-").reverse().join("-");
+
+//     var passwordUpdated = false;
+
+//     const newStudent = await new Student({
+//       name,
+//       dob,
+//       password,
+//       username,
+//       department,
+//       contactNumber,
+//       avatar,
+//       email,
+//       section,
+//       gender,
+//       batch,
+//       fatherName,
+//       motherName,
+//       fatherContactNumber,
+//       motherContactNumber,
+//       year,
+//       passwordUpdated,
+//     });
+
+//     await newStudent.save();
+
+//     const subjects = await Subject.find({ department, year });
+//     if (subjects.length !== 0) {
+//       for (var i = 0; i < subjects.length; i++) {
+//         newStudent.subjects.push(subjects[i]._id);
+//       }
+//     }
+
+//     await newStudent.save();
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Student registered successfully",
+//       response: newStudent,
+//     });
+//   } catch (error) {
+//     const errors = { backendError: String };
+//     errors.backendError = error;
+//     res.status(500).json(errors);
+//   }
+// };
+
+
 export const getStudent = async (req, res) => {
   try {
     const { department, year, section } = req.body;
@@ -585,10 +740,39 @@ export const getStudent = async (req, res) => {
     res.status(500).json(errors);
   }
 };
+
+export const getMember = async (req,res) => {
+  try {
+    const { committees } = req.body;
+    const errors = { noStudentError: String };
+    const committeemember = await committeemembers.find({ committees });
+
+    if (committeemember.length === 0) {
+      errors.noStudentError = "No Student Found";
+      return res.status(404).json(errors);
+    }
+
+    res.status(200).json({ result: committeemember });
+  } catch (error) {
+    const errors = { backendError: String };
+    errors.backendError = error;
+    res.status(500).json(errors);
+  }
+}
+
 export const getAllStudent = async (req, res) => {
   try {
     const students = await Student.find();
     res.status(200).json(students);
+  } catch (error) {
+    console.log("Backend Error", error);
+  }
+};
+
+export const getAllCommitteeMember = async (req, res) => {
+  try {
+    const committeeMembers = await committeemembers.find();
+    res.status(200).json(committeeMembers);
   } catch (error) {
     console.log("Backend Error", error);
   }
@@ -615,6 +799,14 @@ export const getAllDepartment = async (req, res) => {
   try {
     const departments = await Department.find();
     res.status(200).json(departments);
+  } catch (error) {
+    console.log("Backend Error", error);
+  }
+};
+export const getAllCommittee = async (req, res) => {
+  try {
+    const committees = await Committee.find();
+    res.status(200).json(committees);
   } catch (error) {
     console.log("Backend Error", error);
   }

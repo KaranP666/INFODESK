@@ -6,6 +6,43 @@ import Marks from "../models/marks.js";
 import Attendence from "../models/attendance.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import multer from 'multer';
+import express from 'express';
+
+import Achievement from '../models/student.js'; // Import the achievement model
+
+const router = express.Router();
+const upload = multer();
+
+// Route for uploading PDF files to the achievement model
+router.post('/upload-pdf', upload.single('pdfFile'), async (req, res) => {
+  try {
+    // Handle saving the PDF file to the achievement model in MongoDB here
+    const pdfFile = req.file;
+
+    if (pdfFile) {
+      // Save the file to the achievement model
+      const achievement = new Achievement({
+        pdfFile: pdfFile.buffer, // Assuming your achievement model has a field called pdfFile to store the buffer
+      });
+
+      await achievement.save();
+
+      // File uploaded successfully
+      res.status(200).json({ message: 'File uploaded successfully' });
+    } else {
+      // No file selected
+      res.status(400).json({ error: 'No file selected' });
+    }
+  } catch (error) {
+    // Handle errors
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+export default router;
+
 
 export const studentLogin = async (req, res) => {
   const { username, password } = req.body;
@@ -85,6 +122,7 @@ export const updateStudent = async (req, res) => {
       fatherName,
       motherName,
       fatherContactNumber,
+      skillSets // Add skillSets to the destructuring assignment
     } = req.body;
     const updatedStudent = await Student.findOne({ email });
     if (name) {
@@ -130,6 +168,10 @@ export const updateStudent = async (req, res) => {
     if (avatar) {
       updatedStudent.avatar = avatar;
       await updatedStudent.save();
+    }
+
+    if (skillSets) {
+      updatedStudent.skillSets = skillSets;
     }
     res.status(200).json(updatedStudent);
   } catch (error) {

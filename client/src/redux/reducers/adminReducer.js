@@ -3,6 +3,8 @@ import {
   ADD_FACULTY,
   ADD_STUDENT,
   ADD_SUBJECT,
+  ADD_COMMITTEE,
+  ADD_COMMITTEE_MEMBER,
   ADMIN_LOGIN,
   GET_FACULTY,
   GET_SUBJECT,
@@ -15,6 +17,8 @@ import {
   GET_ALL_FACULTY,
   GET_ALL_ADMIN,
   GET_ALL_DEPARTMENT,
+  GET_ALL_COMMITEE,
+  GET_ALL_COMMITEE_MEMBER,
   UPDATE_PASSWORD,
   GET_ADMIN,
   DELETE_ADMIN,
@@ -24,6 +28,7 @@ import {
   DELETE_SUBJECT,
   CREATE_NOTICE,
   GET_NOTICE,
+  GET_MEMBER,
 } from "../actionTypes";
 
 const initialState = {
@@ -31,15 +36,22 @@ const initialState = {
   updatedPassword: false,
   updatedAdmin: false,
   adminAdded: false,
+  committeeAdded: false,
+  committeeMemberAdded: false,
   departmentAdded: false,
   facultyAdded: false,
   studentAdded: false,
   subjectAdded: false,
   allFaculty: [],
+  allCommittee : [],
+  allCommiteeMember : [],
   allSubject: [],
   allStudent: [],
   allAdmin: [],
   allDepartment: [],
+  committees: [],
+  committeemembers: [],
+  commiteemember:[],
   students: [],
   faculties: [],
   subjects: [],
@@ -116,10 +128,30 @@ const adminReducer = (state = initialState, action) => {
         ...state,
         facultyAdded: action.payload,
       };
+    case ADD_COMMITTEE:
+      return {
+        ...state,
+        committeeAdded: action.payload,
+      };
+    case ADD_COMMITTEE_MEMBER:
+      return {
+        ...state,
+        committeeMemberAdded: action.payload,
+      };
     case GET_FACULTY:
       return {
         ...state,
         faculties: action.payload,
+      };
+    case GET_ALL_COMMITEE:
+      return {
+        ...state,
+        allCommittee: action.payload,
+      };
+    case GET_ALL_COMMITEE_MEMBER:
+      return {
+        ...state,
+        committeemembers: action.payload,
       };
     case GET_NOTICE:
       return {
@@ -170,6 +202,11 @@ const adminReducer = (state = initialState, action) => {
       return {
         ...state,
         students: action.payload,
+      };
+    case GET_MEMBER:
+      return {
+        ...state,
+        commiteemember : action.payload,
       };
     case GET_ALL_STUDENT:
       return {

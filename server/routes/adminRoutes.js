@@ -25,6 +25,14 @@ import {
   deleteSubject,
   createNotice,
   getNotice,
+  addCommittee,
+  // allCommitee,
+  // addCommitteeMember,
+  addCommitteeMembers,
+  getAllCommittee,
+  getAllCommitteeMember ,
+  getMember,
+  // getCommitteeMember
 } from "../controller/adminController.js";
 const router = express.Router();
 
@@ -36,15 +44,24 @@ router.get("/getallfaculty", auth, getAllFaculty);
 router.get("/getalldepartment", auth, getAllDepartment);
 router.get("/getallsubject", auth, getAllSubject);
 router.get("/getalladmin", auth, getAllAdmin);
+router.get("/getAllcommittee", auth, getAllCommittee);
+router.get("/getAllcommitteeMember", auth, getAllCommitteeMember);
+
 router.post("/updateprofile", auth, updateAdmin);
 router.post("/addadmin", auth, addAdmin);
 router.post("/adddepartment", auth, addDepartment);
 router.post("/addfaculty", auth, addFaculty);
 router.post("/getfaculty", auth, getFaculty);
+router.post("/addCommittee", auth, addCommittee);
+router.post("/addCommitteeMembers", auth, addCommitteeMembers);
+// router.post("/allCommitee", auth, allCommitee);
+// router.post("/getCommiteeMember", auth, getCommitteeMember);
 router.post("/addsubject", auth, addSubject);
 router.post("/getsubject", auth, getSubject);
 router.post("/addstudent", auth, addStudent);
 router.post("/getstudent", auth, getStudent);
+router.post("/getmember", auth, getMember);
+
 router.post("/getnotice", auth, getNotice);
 router.post("/getadmin", auth, getAdmin);
 router.post("/deleteadmin", auth, deleteAdmin);
