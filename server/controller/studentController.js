@@ -169,15 +169,35 @@ export const updateStudent = async (req, res) => {
       updatedStudent.avatar = avatar;
       await updatedStudent.save();
     }
-
     if (skillSets) {
       updatedStudent.skillSets = skillSets;
+      await updatedStudent.save();
     }
     res.status(200).json(updatedStudent);
   } catch (error) {
     res.status(500).json(error);
   }
 };
+
+export const getDetailsStudent = async (req, res) => {
+  try {
+    const {id} = req.body
+    const errors = { notestError: String };
+
+    const student = await Student.findOne({ _id: id });
+    if(student?._doc) {
+      res.status(200).json({
+        ...student._doc
+      });
+    } else {
+      errors.notestError = "No Student Found";
+      return res.status(404).json(errors);
+    }
+    
+  } catch (error) {
+    res.status(500).json(error);
+  }
+}
 
 export const testResult = async (req, res) => {
   try {

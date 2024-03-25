@@ -6,6 +6,8 @@ import Marks from "../models/marks.js";
 import Attendence from "../models/attendance.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+// import Student from "../models/student.js";
+
 
 export const facultyLogin = async (req, res) => {
   const { username, password } = req.body;
@@ -268,5 +270,45 @@ export const markAttendance = async (req, res) => {
     const errors = { backendError: String };
     errors.backendError = error;
     res.status(500).json(errors);
+  }
+};
+
+
+
+export const getStudentByUsername = async (req, res) => {
+  try {
+    const { username } = req.params; // Assuming the username is passed as a route parameter
+
+    const student = await Student.findOne({ username });
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    // If the student is found, return the student data
+    return res.status(200).json({ result: student });
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+
+export const getStudentByUsernameOrEmail = async (req, res) => {
+  try {
+    const { identifier } = req.params;
+    const student = await Student.findOne({
+      $or: [{ username: identifier }, { email: identifier }]
+    });
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    return res.status(200).json({ result: student });
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
